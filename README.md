@@ -68,13 +68,15 @@ OpenAPI docs at <http://localhost:8000/docs>.
 ## Sample requests
 
 ```bash
+# Working examples:
 # Upload a PDF
 curl -X POST http://localhost:8000/ocr \
-  -F "file=@docs/sample_outputs/referral_letter.pdf"
+  -F "file=@referral_letter.pdf"
 
+Potential tests:
 # Upload an image
 curl -X POST http://localhost:8000/ocr \
-  -F "file=@receipt.png"
+  -F "file=@image.png"
 ```
 
 ### Sample success response
