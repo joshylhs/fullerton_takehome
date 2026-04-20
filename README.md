@@ -6,48 +6,6 @@ extracts structured fields, and returns a JSON envelope ready for downstream
 claim adjudication.
 
 ## Pipeline
-```mermaid
-flowchart TD
-    Client([Client])
-    API["FastAPI<br/><b>POST /ocr</b><br/>app/api"]
-    Norm["<b>1. Normalize</b><br/>app/pipeline/normalize.py<br/>PDF&rarr;PIL via pdf2image / PyMuPDF<br/>+ extract raw embedded text"]
-    Cls["<b>2. Classify</b><br/>app/pipeline/classify.py<br/>Keyword rules over raw text<br/>&rarr; Gemini vision fallback"]
-    Ext1["<b>3a. Extract (attempt 1)</b><br/>app/pipeline/extract.py<br/>Gemini 2.5 Flash-Lite<br/>temp=0, response_schema=JSON"]
-    Post["<b>4. Postprocess</b><br/>app/pipeline/postprocess.py<br/>Amounts &rarr; int<br/>Dates &rarr; DD/MM/YYYY<br/>Strip 'Fullerton Health'"]
-    Val["<b>5. Validate</b><br/>app/pipeline/validate.py<br/>Pydantic + required-field<br/>+ cross-check vs raw text"]
-    Decide{Validation<br/>OK?}
-    Repair["Build <b>repair prompt</b><br/>failure summary<br/>+ raw-text hints"]
-    Ext2["<b>3b. Extract (attempt 2)</b><br/>repair prompt"]
-    Post2["Postprocess + Validate"]
-    Pick{"Pick better<br/>(fewer errors)"}
-    Outcome{Outcome}
-    Store[("FailureStore<br/>app/storage<br/>failed_extractions/")]
-    Resp["JSON envelope<br/>document_type, finalJson,<br/>attempts, low_confidence,<br/>failed_fields, review_id,<br/>stage_timings"]
-
-    Client -->|multipart PDF/JPG/PNG| API
-    API -->|raw bytes + MIME| Norm
-    Norm -->|PIL image + raw_text| Cls
-    Cls -->|DocumentType| Ext1
-    Ext1 --> Post
-    Post --> Val
-    Val --> Decide
-    Decide -- yes --> Outcome
-    Decide -- no, retries enabled --> Repair
-    Repair --> Ext2
-    Ext2 --> Post2
-    Post2 --> Pick
-    Pick --> Outcome
-    Outcome -->|recovered / degraded / failed| Store
-    Outcome --> Resp
-    Resp --> Client
-
-    classDef stage fill:#eef,stroke:#447,stroke-width:1px,color:#000
-    classDef io fill:#fff,stroke:#666,color:#000
-    classDef store fill:#fee,stroke:#a44,color:#000
-    class Norm,Cls,Ext1,Ext2,Post,Post2,Val,Repair stage
-    class API,Resp io
-    class Store store
-```
 
 ```
 Upload (PDF/image)
