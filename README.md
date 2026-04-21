@@ -128,19 +128,19 @@ pytest -m slow        # opt-in: hits the live Gemini API
 The pipeline is registry-driven, so adding a type (e.g. `discharge_summary`)
 takes four small changes and zero edits to the orchestrator:
 
-1. **Schema** — create `app/schemas/discharge_summary.py` with:
+1. **Schema**: create `app/schemas/discharge_summary.py` with:
    - a Pydantic model `DischargeSummaryFields`
    - `DISCHARGE_SUMMARY_REQUIRED_FIELDS: list[str]`
    - `DISCHARGE_SUMMARY_GEMINI_SCHEMA: dict` (passed to `response_schema`)
 
-2. **Prompt** — create `app/prompts/discharge_summary.py` describing each field
+2. **Prompt**: create `app/prompts/discharge_summary.py` describing each field
    and call `build_extraction_prompt()`.
 
-3. **Register** — in `app/schemas/__init__.py` add an entry to `DOC_TYPE_REGISTRY`,
+3. **Register**: in `app/schemas/__init__.py` add an entry to `DOC_TYPE_REGISTRY`,
    and in `app/prompts/__init__.py` add to `EXTRACTION_PROMPTS`. Add the new
    value to `DocumentType` in `app/schemas/base.py`.
 
-4. **Classifier hint** — in `app/pipeline/classify.py` add a list of distinctive
+4. **Classifier hint**;:in `app/pipeline/classify.py` add a list of distinctive
    keywords under `KEYWORD_RULES`. The Gemini classifier fallback also needs
    the new label added to `CLASSIFY_PROMPT` in `app/prompts/base.py`.
 
