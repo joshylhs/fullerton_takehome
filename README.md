@@ -118,7 +118,7 @@ curl -X POST http://localhost:8000/ocr \
 
 ### Sample Failure Store
 
-json```
+```json
 {
   "id": "7c3ffea6-a22a-4ea7-8e3e-ea05620914a2",
   "timestamp": "2026-04-20T18-36-06.742830+00-00",
