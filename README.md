@@ -116,6 +116,88 @@ curl -X POST http://localhost:8000/ocr \
 | 422    | Document type not in supported list        | `{"error": "unsupported_document_type"}`   |
 | 500    | Unhandled exception                        | `{"error": "internal_server_error"}`       |
 
+### Sample Failure Store
+
+json```
+{
+  "id": "7c3ffea6-a22a-4ea7-8e3e-ea05620914a2",
+  "timestamp": "2026-04-20T18-36-06.742830+00-00",
+  "document_type": "receipt",
+  "file_hash": "f8688f3bbc9780de38bcf9415a9eff6846e5519e0b53b147c0d01334a5ff90bf",
+  "final_status": "failed",
+  "attempts": [
+    {
+      "attempt": 1,
+      "prompt_kind": "base",
+      "raw": {
+        "claimant_address": "123 SAMPLE ST #01-01",
+        "claimant_date_of_birth": null,
+        "claimant_name": "JOHN DOE",
+        "provider_name": null,
+        "tax_amount": "365",
+        "total_amount": "4925"
+      },
+      "cleaned": {
+        "claimant_name": "JOHN DOE",
+        "claimant_address": "123 SAMPLE ST #01-01",
+        "claimant_date_of_birth": null,
+        "provider_name": null,
+        "tax_amount": 365,
+        "total_amount": 4925
+      },
+      "errors": [
+        {
+          "field": "provider_name",
+          "reason": "Required field is missing.",
+          "severity": "missing_required",
+          "value": null
+        }
+      ],
+      "missing_required": [
+        "provider_name"
+      ]
+    },
+    {
+      "attempt": 2,
+      "prompt_kind": "repair",
+      "raw": {
+        "claimant_address": "123 SAMPLE ST #01-01",
+        "claimant_date_of_birth": null,
+        "claimant_name": "JOHN DOE",
+        "provider_name": null,
+        "tax_amount": "365",
+        "total_amount": "4925"
+      },
+      "cleaned": {
+        "claimant_name": "JOHN DOE",
+        "claimant_address": "123 SAMPLE ST #01-01",
+        "claimant_date_of_birth": null,
+        "provider_name": null,
+        "tax_amount": 365,
+        "total_amount": 4925
+      },
+      "errors": [
+        {
+          "field": "provider_name",
+          "reason": "Required field is missing.",
+          "severity": "missing_required",
+          "value": null
+        }
+      ],
+      "missing_required": [
+        "provider_name"
+      ]
+    }
+  ],
+  "missing_required_fields": [
+    "provider_name"
+  ],
+  "reviewed": false,
+  "reviewer_notes": null,
+  "corrected_output": null
+}
+```
+
 ## Tests
 
 ```bash
